@@ -381,8 +381,9 @@ function fg = k2g(fk,sym,da)
     if da, nxh = 3*nx/2; else nxh = nx; end
     
     fg = nxh*2*nz*ifft(ifft(fkf,2*nz,2),nxh,'symmetric'); % nxh x 2*nz
-    
-    if ~da, fg = fg(:,1:nz); end
+   
+    % keep values at level nz+1, i.e. z=H. 
+    if ~da, fg = fg(:,1:nz+1); end
         
     fg = real(fg);
     

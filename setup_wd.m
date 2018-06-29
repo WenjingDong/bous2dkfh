@@ -49,7 +49,7 @@ Xpin.x = linspace(x0,2*pi+x0-2*pi/np,np)';
 
 numsteps = 50000;
 savestep = 100;
-[Sout,time,energy,Xp] = bous2kfh_wd(Sin,N,f,numsteps,savestep,Xpin);
+[Sout,time,energy,Xp] = bous2kfh(Sin,N,f,numsteps,savestep,Xpin);
 
 % validation of the code: compare the velocity with exact soln
 u_ex = a*m*cos(k*x_ - omega * time(end)).*cos(m*z_);

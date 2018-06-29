@@ -318,18 +318,21 @@ function fgf = mirror(fg,sym)
     % Input:  fg(nx,nz)
     % Output: fgm(nx,2*nz)
     % sym = 1 => odd, sym = 0 => even.
-       
+
+    %---------
+    % values at z=H are given by initial conditions
+    %---------       
     global nx nz
     
     fgf = zeros(nx,2*nz);
     fgf(:,1:nz) = fg;
 
     if sym % odd
-        fgf(:,nz+1) = fg(:,1);
+%        fgf(:,nz+1) = fg(:,1);
         fgf(:,end:-1:nz+2) = -fg(:,2:end);
     else % even
         fgf(:,end:-1:nz+2) = fg(:,2:end);
-        fgf(:,nz+1) = -sum(fgf,2); % demand mean 0 .. nx/2+1 still 0
+%        fgf(:,nz+1) = -sum(fgf,2); % demand mean 0 .. nx/2+1 still 0
     end
     
     return

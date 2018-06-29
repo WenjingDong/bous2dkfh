@@ -92,7 +92,7 @@ if (mod(log2(nz),1)~=0), error('must have nz = 2^(integer)'); end
 dx = 2*pi/nx;
 dz = pi/nz;
 x = (0:nx-1)*dx;  
-z = (0:nz-1)*dz;
+z = (0:nz)*dz;
 [x_,z_] = ndgrid(x,z); 
 
 % Set up arrays of wavenumbers for computing derivatives
@@ -133,7 +133,7 @@ a1 = 23/12;   a2 = -16/12;  a3 = 5/12;
 
 % Preallocate arrays to hold saved output
 nframes = floor(numsteps/savestep);
-Sout = zeros(nx,nz,nS,nframes);  % output on grid
+Sout = zeros(nx,nz+1,nS,nframes);  % output on grid
 time = zeros(1,nframes); 
 ke = zeros(1,nframes); 
 pe = zeros(1,nframes); 

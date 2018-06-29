@@ -45,7 +45,14 @@ function [Sout,time,energy,Xp,bmov,Bp] = bous2kfh(Sin,N,f,numsteps,savestep,Xpin
 %
 %  sin and cos transforms done using fft, with even or odd
 %  symmmetry.  u, V are even;  w, b are odd;  ddz <-> ikz_ switches symmetry
-%
+
+%  ------------------
+%   Added by Wenjing
+%  When a field variable is even, its value at z=H has to be specified rather than 
+%  calculated by forcing the average to be zero.
+%  Thus the dimension of the data is nx * (nz+1)
+%  ------------------
+
 %  Tuning factors dttune and nutune and hyperviscous order a
 %  can be set by editing this file directly.
 
@@ -75,6 +82,8 @@ if (nargout>4), makemov=true;  end
 
 % Get and check dimensions
 [nx,nz,nS] = size(Sin);
+
+nz = nz - 1;
 
 if (mod(log2(nx),1)~=0), error('must have nx = 2^(integer)'); end
 if (mod(log2(nz),1)~=0), error('must have nz = 2^(integer)'); end

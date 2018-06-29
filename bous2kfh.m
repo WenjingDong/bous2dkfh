@@ -329,9 +329,9 @@ function fgf = mirror(fg,sym)
 
     if sym % odd
 %        fgf(:,nz+1) = fg(:,1);
-        fgf(:,end:-1:nz+2) = -fg(:,2:end);
+        fgf(:,end:-1:nz+2) = -fg(:,2:end-1);
     else % even
-        fgf(:,end:-1:nz+2) = fg(:,2:end);
+        fgf(:,end:-1:nz+2) = fg(:,2:end-1);
 %        fgf(:,nz+1) = -sum(fgf,2); % demand mean 0 .. nx/2+1 still 0
     end
     

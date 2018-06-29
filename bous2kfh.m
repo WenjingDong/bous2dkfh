@@ -325,7 +325,7 @@ function fgf = mirror(fg,sym)
     global nx nz
     
     fgf = zeros(nx,2*nz);
-    fgf(:,1:nz) = fg;
+    fgf(:,1:nz+1) = fg;
 
     if sym % odd
 %        fgf(:,nz+1) = fg(:,1);

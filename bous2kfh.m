@@ -18,7 +18,8 @@ function [Sout,time,energy,Xp,bmov,Bp] = bous2kfh(Sin,N,f,numsteps,savestep,Xpin
 %
 %  Inputs
 %
-%  Sin:       nx x nz x 4 array with initial u, w, V, b (resp)
+%  Sin:       nx x nz+1 x 4 array with initial u, w, V, b (resp)
+%  The dimension of Sin has been increased to include the top level, z=H. (added by Wenjing)
 %  N:         Mean buoyancy gradient (H/pi * N^2_dim)
 %  f:         Coriolis parameter
 %  numsteps:  Total number of timesteps 
@@ -81,9 +82,9 @@ makemov = false;
 if (nargout>4), makemov=true;  end
 
 % Get and check dimensions
-[nx,nz,nS] = size(Sin);
-
-nz = nz - 1;
+[nx,nz',nS] = size(Sin);
+% nz' is a temporary variable
+nz = nz' - 1;
 
 if (mod(log2(nx),1)~=0), error('must have nx = 2^(integer)'); end
 if (mod(log2(nz),1)~=0), error('must have nz = 2^(integer)'); end

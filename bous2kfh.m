@@ -82,9 +82,9 @@ makemov = false;
 if (nargout>4), makemov=true;  end
 
 % Get and check dimensions
-[nx,nz',nS] = size(Sin);
+[nx,nzt,nS] = size(Sin);
 % nz' is a temporary variable
-nz = nz' - 1;
+nz = nzt - 1;
 
 if (mod(log2(nx),1)~=0), error('must have nx = 2^(integer)'); end
 if (mod(log2(nz),1)~=0), error('must have nz = 2^(integer)'); end

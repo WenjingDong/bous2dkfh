@@ -139,7 +139,7 @@ time = zeros(1,nframes);
 ke = zeros(1,nframes); 
 pe = zeros(1,nframes); 
 if (np>0)
-    Bc = interpolate(Xpin.x,Xpin.y,Sin(:,:,b_ind)+N2*z_,dx,dz);
+    Bc = interpolate(Xpin.x,Xpin.z,Sin(:,:,b_ind)+N2*z_,dx,dz);
     Bc = [0; Bc];
 end
 

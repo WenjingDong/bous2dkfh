@@ -63,7 +63,7 @@ nutune = 10;
 dttune = .2;   % Courant number
    
 % Set global params for use in rhs functions
-global nx nz ikx_ ikz_ K2_ da noda odd even u_ind w_ind V_ind b_ind
+global nx nz ikx_ ikz_ K2_ da noda odd even u_ind w_ind v_ind b_ind
 
 N2 = N^2;  %f2 = f^2;
 

@@ -192,7 +192,7 @@ while keepgoing
         Sout(:,:,b_ind,frame) = b;
         
         divtotal(frame) = sum(abs(div(:)));
-        energy(frame) = .5*sum(u(:).^2+(V(:)/f).^2+w(:).^2+b(:).^2/N2)/(nx*nz);
+        energy(frame) = .5*sum(u(:).^2+(v(:)).^2+w(:).^2+b(:).^2/N2)/(nx*nz);
         time(frame) = t;
         disp(strcat('Wrote frame >',num2str(frame),' out of >',num2str(nframes)))
         disp(strcat('max(|u|) = ',num2str(Umax),', dt = ',num2str(dt),', nu = ',num2str(nu)))

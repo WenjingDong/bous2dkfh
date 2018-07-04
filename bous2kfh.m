@@ -250,8 +250,8 @@ while keepgoing
 
     
     if (np>0) % advect particles -- MAKE 3D?!
-        Bp(:,n+1) = interpolate(Xp(n+1).x,Xp(n+1).y,b+N2*z_,dx,dz);
-        Xp(n+2) = advect_particles(Xp(n+1),u,w,dx,dz,dt);
+        Bp(:,n+1) = interpolate(Xp(n+1).x,Xp(n+1).z,b+N2*z_,dx,dz);
+        Xp(n+2) = advect_particles(Xp(n+1),u,v, w,dx,dz,dt);
         % Get total buoyancy b+N^2*z at particle locations
     end
     
@@ -392,29 +392,34 @@ function fg = k2g(fk,sym,da)
         
 %-------------------------------------------------------------------
 
-function [Xp] = advect_particles(Xp,u,v,dx,dy,dt)
+function [Xp] = advect_particles(Xp,u,v,w, dx,dz,dt)
     
 % particle position vector for particle m: Xp(t)=[Xp(t).x_m,Xp(t).y_m]
 % m = 1:np
 % Inputs:  Xp:  structure with Xp.x and Xp.y
-%          u, v:  velocity field
+%          u, v, w:  velocity field
     
 % advect with RK4
 
-xp1 = dt*interpolate(Xp.x,Xp.y,u,dx,dy);
-yp1 = dt*interpolate(Xp.x,Xp.y,v,dx,dy);
+xp1 = dt*interpolate(Xp.x,Xp.z,u,dx,dz);
+yp1 = dt*interpolate(Xp.x,Xp.z,v,dx,dz);
+zp1 = dt*interpolate(Xp.x,Xp.z,w,dx,dz);
 
-xp2 = dt*interpolate(Xp.x+xp1/2,Xp.y+yp1/2,u,dx,dy);
-yp2 = dt*interpolate(Xp.x+xp1/2,Xp.y+yp1/2,v,dx,dy);
+xp2 = dt*interpolate(Xp.x+xp1/2,Xp.z+zp1/2,u,dx,dz);
+yp2 = dt*interpolate(Xp.x+xp1/2,Xp.z+zp1/2,v,dx,dz);
+zp2 = dt*interpolate(Xp.x+xp1/2,Xp.z+zp1/2,w,dx,dz);
 
-xp3 = dt*interpolate(Xp.x+xp2/2,Xp.y+yp2/2,u,dx,dy);
-yp3 = dt*interpolate(Xp.x+xp2/2,Xp.y+yp2/2,v,dx,dy);
+xp3 = dt*interpolate(Xp.x+xp2/2,Xp.z+zp2/2,u,dx,dz);
+yp3 = dt*interpolate(Xp.x+xp2/2,Xp.z+zp2/2,v,dx,dz);
+zp3 = dt*interpolate(Xp.x+xp2/2,Xp.z+zp2/2,w,dx,dz);
 
-xp4 = dt*interpolate(Xp.x+xp3,Xp.y+yp3,u,dx,dy);
-yp4 = dt*interpolate(Xp.x+xp3,Xp.y+yp3,v,dx,dy);
+xp4 = dt*interpolate(Xp.x+xp3,Xp.z+zp3,u,dx,dz);
+yp4 = dt*interpolate(Xp.x+xp3,Xp.z+zp3,v,dx,dz);
+zp4 = dt*interpolate(Xp.x+xp3,Xp.z+zp3,w,dx,dz);
 
 Xp.x = Xp.x + (xp1 + 2*xp2 + 2*xp3 + xp4)/6;
 Xp.y = Xp.y + (yp1 + 2*yp2 + 2*yp3 + yp4)/6; 
+Xp.z = Xp.z + (zp1 + 2*zp2 + 2*zp3 + zp4)/6; 
 
 %-------------------------------------------------------------------
 

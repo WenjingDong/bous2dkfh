@@ -277,7 +277,7 @@ function Rk = getrhs(Sk,N2,f)
     %  b_t = -u b_x - w b_z - N^2 w    (b odd)
     %  del^2 P = 2[u_x w_z - u_z w_x] + fv_x + b_z 
 
-    global ikx_ ikz_ K2_ odd even da u_ind w_ind V_ind b_ind
+    global ikx_ ikz_ K2_ odd even da u_ind w_ind v_ind b_ind
     
     u   = k2g(Sk(:,:,u_ind),even,da);
     w   = k2g(Sk(:,:,w_ind),odd,da);

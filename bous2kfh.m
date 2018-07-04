@@ -6,7 +6,7 @@ function [Sout,time,energy,Xp,bmov,Bp] = bous2kfh(Sin,N,f,numsteps,savestep,Xpin
 %
 %  Du/Dt - V + P_x = d(u)
 %  Dw/Dt - b + P_z = d(w)
-%  DV/Dt + f^2 u = d(V),  where  V = f v
+%  Dv/Dt + f u = d(v)       use v instead of V=fv to avoid divide V by zero
 %  Db/Dt + N^2 w = d(b)
 %  del^2 P = V_x + b_z + 2J(u,w)
 %
@@ -65,9 +65,9 @@ dttune = .2;   % Courant number
 % Set global params for use in rhs functions
 global nx nz ikx_ ikz_ K2_ da noda odd even u_ind w_ind V_ind b_ind
 
-N2 = N^2;  f2 = f^2;
+N2 = N^2;  %f2 = f^2;
 
-u_ind = 1; w_ind = 2; V_ind = 3; b_ind = 4;
+u_ind = 1; w_ind = 2; v_ind = 3; b_ind = 4;
 
 if nargin > 5, 
     np = length(Xpin.x);
@@ -120,7 +120,7 @@ clear fR fU
 size(Sin)
 Sk(:,:,u_ind) = g2k(mirror(Sin(:,:,u_ind),even));  % u is even
 Sk(:,:,w_ind) = g2k(mirror(Sin(:,:,w_ind),odd));   % w is odd
-Sk(:,:,V_ind) = g2k(mirror(Sin(:,:,V_ind),even));  % V is even
+Sk(:,:,v_ind) = g2k(mirror(Sin(:,:,v_ind),even));  % V is even
 Sk(:,:,b_ind) = g2k(mirror(Sin(:,:,b_ind),odd));   % b is odd
 
 figure;
@@ -153,7 +153,7 @@ while keepgoing
     % Save n-1 and n-2 rhs and get next one.  
     Rkm2 = Rkm1;
     Rkm1 = Rk;
-    Rk = getrhs(Sk,N2,f2);  
+    Rk = getrhs(Sk,N2,f);  
     
     if (n==0) Rkm1 = Rk; Rkm2 = Rk; end
 
@@ -166,7 +166,7 @@ while keepgoing
         disp(strcat('Blow up! Umax= ',num2str(Umax),', t= ',num2str(t)))
         Sout(:,:,u_ind,frame+1) = k2g(Sk(:,:,u_ind),even,noda); 
         Sout(:,:,w_ind,frame+1) = k2g(Sk(:,:,w_ind),odd,noda); 
-        Sout(:,:,V_ind,frame+1) = k2g(Sk(:,:,V_ind),even,noda); 
+        Sout(:,:,v_ind,frame+1) = k2g(Sk(:,:,v_ind),even,noda); 
         Sout(:,:,b_ind,frame+1) = k2g(Sk(:,:,b_ind),odd,noda); 
         keepgoing = false;
     end
@@ -180,7 +180,7 @@ while keepgoing
         frame = frame+1;  
         u = k2g(Sk(:,:,u_ind),even,noda); 
         w = k2g(Sk(:,:,w_ind),odd,noda); 
-        V = k2g(Sk(:,:,V_ind),even,noda); 
+        v = k2g(Sk(:,:,v_ind),even,noda); 
         b = k2g(Sk(:,:,b_ind),odd,noda); 
         
         % check if the flow is non-divergent
@@ -188,7 +188,7 @@ while keepgoing
         
         Sout(:,:,u_ind,frame) = u;
         Sout(:,:,w_ind,frame) = w;
-        Sout(:,:,V_ind,frame) = V;
+        Sout(:,:,v_ind,frame) = v;
         Sout(:,:,b_ind,frame) = b;
         
         divtotal(frame) = sum(abs(div(:)));
@@ -217,9 +217,9 @@ while keepgoing
             
             % added by Wenjing. calcualte PV -fN^2
             b_z = k2g(ikz_.*Sk(:,:,b_ind),even,noda);
-            v_x =  k2g(ikx_.*Sk(:,:,V_ind),even,noda); 
+            v_x =  k2g(ikx_.*Sk(:,:,v_ind),even,noda); 
             b_x = k2g(ikx_.*Sk(:,:,b_ind),odd,noda);
-            v_z =  k2g(ikz_.*Sk(:,:,V_ind),odd,noda);
+            v_z =  k2g(ikz_.*Sk(:,:,v_ind),odd,noda);
             
             u_z = k2g(ikz_.*Sk(:,:,u_ind),odd,noda); %% this one has a problem
             w_x = k2g(ikx_.*Sk(:,:,w_ind),odd,noda);
@@ -269,13 +269,13 @@ return
 % Internal functions
 %-------------------------------------------------------------------
 
-function Rk = getrhs(Sk,N2,f2)
+function Rk = getrhs(Sk,N2,f)
     
     %  u_t = -u u_x - w u_z + V - P_x  (u even)
     %  w_t = -u w_x - w w_z + b - P_z  (w odd)
-    %  V_t = -u V_x - w V_z - f^2 u    (V even)
+    %  v_t = -u v_x - w v_z - f u    (V even)
     %  b_t = -u b_x - w b_z - N^2 w    (b odd)
-    %  del^2 P = 2[u_x w_z - u_z w_x] + V_x + b_z 
+    %  del^2 P = 2[u_x w_z - u_z w_x] + fv_x + b_z 
 
     global ikx_ ikz_ K2_ odd even da u_ind w_ind V_ind b_ind
     
@@ -283,17 +283,17 @@ function Rk = getrhs(Sk,N2,f2)
     w   = k2g(Sk(:,:,w_ind),odd,da);
     u_x = k2g(ikx_.*Sk(:,:,u_ind),even,da);
     w_x = k2g(ikx_.*Sk(:,:,w_ind),odd,da);
-    V_x = k2g(ikx_.*Sk(:,:,V_ind),even,da);
+    v_x = k2g(ikx_.*Sk(:,:,v_ind),even,da);
     b_x = k2g(ikx_.*Sk(:,:,b_ind),odd,da);
     u_z = k2g(ikz_.*Sk(:,:,u_ind),odd,da);
     w_z = k2g(ikz_.*Sk(:,:,w_ind),even,da);
-    V_z = k2g(ikz_.*Sk(:,:,V_ind),odd,da);
+    v_z = k2g(ikz_.*Sk(:,:,v_ind),odd,da);
     b_z = k2g(ikz_.*Sk(:,:,b_ind),even,da);
     
-    Pk = -(2*g2k(u_x.*w_z - u_z.*w_x) + ikx_.*Sk(:,:,V_ind) + ikz_.*Sk(:,:,b_ind))./K2_;
+    Pk = -(2*g2k(u_x.*w_z - u_z.*w_x) + ikx_.*f*Sk(:,:,v_ind) + ikz_.*Sk(:,:,b_ind))./K2_;
     Rk(:,:,u_ind) = -g2k(u.*u_x + w.*u_z) + Sk(:,:,V_ind) - ikx_.*Pk;
     Rk(:,:,w_ind) = -g2k(u.*w_x + w.*w_z) + Sk(:,:,b_ind) - ikz_.*Pk;  
-    Rk(:,:,V_ind) = -g2k(u.*V_x + w.*V_z) - f2*Sk(:,:,u_ind);  
+    Rk(:,:,v_ind) = -g2k(u.*v_x + w.*v_z) - f*Sk(:,:,u_ind);  
     Rk(:,:,b_ind) = -g2k(u.*b_x + w.*b_z) - N2*Sk(:,:,w_ind);  
     
     return

@@ -291,7 +291,7 @@ function Rk = getrhs(Sk,N2,f)
     b_z = k2g(ikz_.*Sk(:,:,b_ind),even,da);
     
     Pk = -(2*g2k(u_x.*w_z - u_z.*w_x) + ikx_.*f*Sk(:,:,v_ind) + ikz_.*Sk(:,:,b_ind))./K2_;
-    Rk(:,:,u_ind) = -g2k(u.*u_x + w.*u_z) + Sk(:,:,V_ind) - ikx_.*Pk;
+    Rk(:,:,u_ind) = -g2k(u.*u_x + w.*u_z) + f*Sk(:,:,v_ind) - ikx_.*Pk;
     Rk(:,:,w_ind) = -g2k(u.*w_x + w.*w_z) + Sk(:,:,b_ind) - ikz_.*Pk;  
     Rk(:,:,v_ind) = -g2k(u.*v_x + w.*v_z) - f*Sk(:,:,u_ind);  
     Rk(:,:,b_ind) = -g2k(u.*b_x + w.*b_z) - N2*Sk(:,:,w_ind);  

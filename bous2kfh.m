@@ -32,7 +32,7 @@ function [Sout,time,energy,Xp,bmov,Bp] = bous2kfh(Sin,N,f,numsteps,savestep,Xpin
 %  time:      Times at which output is saved
 %  energy:    Time series of energy
 %  bmov:      Movie of b field (if bmov included in output list)
-%  Xp:        Structure with coordinates Xp.x, Xp.z of particles
+%  Xp:        Structure with coordinates Xp.x, Xp.y, Xp.z of particles
 %    
 %  Numerical details
 %
